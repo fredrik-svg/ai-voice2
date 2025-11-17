@@ -1,0 +1,27 @@
+{
+  "locale": "sv-SE",
+  "mqtt": {
+    "enabled": true,
+    "host": "mosquitto",
+    "port": 1883,
+    "site_id": "pi-zero-wh"
+  },
+  "speech_to_text": {
+    "system": "dummy"
+  },
+  "wake": {
+    "system": "dummy"
+  },
+  "intent": {
+    "system": "remote",
+    "remote": {
+      "url": "N8N_WEBHOOK_URL"
+    }
+  },
+  "text_to_speech": {
+    "system": "espeak"
+  },
+  "audio_playback": {
+    "system": "dummy"
+  }
+}

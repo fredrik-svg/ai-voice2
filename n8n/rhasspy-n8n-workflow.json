@@ -1,0 +1,82 @@
+{
+  "name": "Rhasspy → n8n → TTS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rhasspy-intent",
+        "responseMode": "onReceived",
+        "options": {
+          "responseContentType": "application/json",
+          "responseBody": "{\"status\":\"ok\"}"
+        }
+      },
+      "id": "Webhook_1",
+      "name": "Rhasspy Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const intentName = $json.intent?.name || 'UNKNOWN';\nconst slots = $json.slots || $json.entities || {};\n\nlet responseText = `Jag tog emot intentet ${intentName}.`;\n\nif (intentName === 'LightOn') {\n  responseText = 'Jag tände lampan.';\n}\n\nif (intentName === 'LightOff') {\n  responseText = 'Jag släckte lampan.';\n}\n\nreturn [{ json: { intentName, slots, responseText } }];"
+      },
+      "id": "Function_1",
+      "name": "Process Intent",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://RHASSPY_BASE_HOST:12101/api/text-to-speech",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\"text\": $json[\"responseText\"], \"siteId\": \"pi-zero-wh\"}"
+      },
+      "id": "HttpRequest_1",
+      "name": "Send TTS to Rhasspy",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        800,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Rhasspy Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Intent": {
+      "main": [
+        [
+          {
+            "node": "Send TTS to Rhasspy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Europe/Stockholm"
+  },
+  "versionId": "rhasspy-n8n-example-1"
+}

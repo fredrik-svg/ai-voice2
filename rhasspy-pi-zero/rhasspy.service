@@ -1,0 +1,12 @@
+[Unit]
+Description=Rhasspy Satellite (Pi Zero WH)
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/home/pi/rhasspy-venv/bin/rhasspy -p sv --user-profiles /home/pi/.config/rhasspy/profiles
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

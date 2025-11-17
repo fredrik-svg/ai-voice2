@@ -1,0 +1,38 @@
+{
+  "locale": "sv-SE",
+  "mqtt": {
+    "enabled": true,
+    "host": "MQTT_HOST",
+    "port": 1883,
+    "username": "MQTT_USER",
+    "password": "MQTT_PASS",
+    "site_id": "pi-zero-wh"
+  },
+  "microphone": {
+    "system": "arecord",
+    "arecord": {
+      "device": "default",
+      "udp_audio": 12202
+    }
+  },
+  "wake": {
+    "system": "raven",
+    "raven": {
+      "udp_audio": 12202,
+      "probability_threshold": 0.5,
+      "minimum_matches": 1
+    }
+  },
+  "intent": {
+    "system": "dummy"
+  },
+  "text_to_speech": {
+    "system": "dummy"
+  },
+  "audio_playback": {
+    "system": "aplay",
+    "aplay": {
+      "device": "default"
+    }
+  }
+}
