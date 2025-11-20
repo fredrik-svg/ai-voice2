@@ -6,8 +6,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Uppdaterar system..."
 sudo apt update
-sudo apt install -y python3 python3-dev python3-venv python3-pip python3-setuptools python3-distutils git alsa-utils \
+sudo apt install -y python3 python3-dev python3-venv python3-pip python3-setuptools git alsa-utils \
     build-essential swig portaudio19-dev libopenblas-dev
+
+# python3-distutils togs bort i Debian/Ubuntu 24.04+, men finns kvar i äldre distar. Försök installera
+# om paketet finns, annars kör vi vidare med fallback till ensurepip/get-pip.py senare i skriptet.
+if apt-cache show python3-distutils >/dev/null 2>&1; then
+    sudo apt install -y python3-distutils
+else
+    echo "python3-distutils saknas i din distribution, hoppar över installationen."
+fi
 
 echo "Klonar Rhasspy från GitHub..."
 cd ~

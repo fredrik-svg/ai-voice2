@@ -19,9 +19,9 @@ Denna mapp innehåller:
    ./install_pi_zero.sh
    ```
 
-   > Tips: Scriptet installerar även `python3-distutils` så att pip fungerar i Python 3.13 där
-   > distutils inte längre ingår i standardbiblioteket. Om du har avbrutit en tidigare körning kan
-   > du behöva köra `sudo apt install python3-distutils` innan du startar om scriptet.
+   > Tips: Scriptet försöker installera `python3-distutils` där paketet finns kvar (äldre Debian/
+   > Ubuntu-versioner). På nyare system där distutils redan är borttaget hanteras pip istället via
+   > ensurepip/get-pip fallback i scriptet.
 
 3. Kontrollera att tjänsten kör:
 
