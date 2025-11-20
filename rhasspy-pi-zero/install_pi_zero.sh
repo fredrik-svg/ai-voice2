@@ -11,8 +11,10 @@ sudo apt install -y python3 python3-dev python3-venv python3-pip python3-setupto
 
 # python3-distutils togs bort i Debian/Ubuntu 24.04+, men finns kvar i äldre distar. Försök installera
 # om paketet finns, annars kör vi vidare med fallback till ensurepip/get-pip.py senare i skriptet.
-if apt-cache show python3-distutils >/dev/null 2>&1; then
-    sudo apt install -y python3-distutils
+if apt-cache show python3-distutils 2>/dev/null | grep -q '^Package:'; then
+    if ! sudo apt install -y python3-distutils; then
+        echo "Kunde inte installera python3-distutils (troligen saknas paketet). Fortsätter utan och använder ensurepip/get-pip-fallback."
+    fi
 else
     echo "python3-distutils saknas i din distribution, hoppar över installationen."
 fi
