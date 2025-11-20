@@ -32,13 +32,16 @@ echo "Uppgraderar pip i Rhasspy virtualenv..."
 if [ -d ".venv" ]; then
     # Använd ensurepip för att installera en ny pip om den gamla är trasig
     .venv/bin/python -m ensurepip --upgrade 2>/dev/null || true
+    
     # Försök uppgradera pip, setuptools och wheel
+    # Om pip är trasigt (t.ex. på Python 3.13 där distutils saknas), använd get-pip.py
     .venv/bin/python -m pip install --upgrade pip setuptools wheel 2>/dev/null || {
-        # Om pip är trasigt, använd get-pip.py
-        echo "Pip är trasigt, använder get-pip.py..."
+        echo "Pip är trasigt (troligen på grund av saknad distutils), använder get-pip.py..."
         curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
         .venv/bin/python /tmp/get-pip.py
         rm /tmp/get-pip.py
+        # Efter get-pip.py, installera setuptools och wheel
+        .venv/bin/python -m pip install --upgrade setuptools wheel
     }
 fi
 
