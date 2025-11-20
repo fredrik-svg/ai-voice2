@@ -23,7 +23,16 @@ python3 -m venv --upgrade-deps ~/rhasspy-venv
 source ~/rhasspy-venv/bin/activate
 
 echo "Installerar Rhasspy (kan ta lite tid)..."
-pip install --upgrade pip setuptools wheel
+# Försök uppgradera pip, setuptools och wheel
+# Om pip är trasigt (t.ex. på Python 3.13 där distutils saknas), använd get-pip.py
+pip install --upgrade pip setuptools wheel 2>/dev/null || {
+    echo "Pip är trasigt (troligen på grund av saknad distutils), använder get-pip.py..."
+    curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+    python /tmp/get-pip.py
+    rm /tmp/get-pip.py
+    # Efter get-pip.py, installera setuptools och wheel
+    pip install --upgrade setuptools wheel
+}
 
 echo "Konfigurerar Rhasspy..."
 ./configure --enable-in-place --disable-dependency-check
