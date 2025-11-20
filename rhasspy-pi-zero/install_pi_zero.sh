@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "Uppdaterar system..."
 sudo apt update
 sudo apt install -y python3 python3-dev python3-venv python3-pip git alsa-utils \
-    build-essential swig portaudio19-dev libatlas-base-dev
+    build-essential swig portaudio19-dev libopenblas-dev
 
 echo "Klonar Rhasspy från GitHub..."
 cd ~
