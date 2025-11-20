@@ -1,0 +1,6 @@
+# Ignore user profile configurations
+sv/
+*.json
+
+# But keep this README
+!README.md
