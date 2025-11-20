@@ -70,8 +70,17 @@ if ! command -v docker &> /dev/null; then
     # Lägg till nuvarande användare i docker-gruppen (endast om gruppen finns)
     if getent group docker &> /dev/null; then
         sudo usermod -aG docker "$USER"
-        echo "Docker installerat! Du behöver logga ut och in igen för att köra Docker utan sudo."
-        echo "Efter omloggning, kör detta skript igen."
+        echo "Docker installerat! Din användare har lagts till i docker-gruppen."
+        echo ""
+        echo "För att använda Docker utan sudo, välj ett av följande alternativ:"
+        echo ""
+        echo "ALTERNATIV 1 (Snabbt - applicera direkt i denna session):"
+        echo "  newgrp docker"
+        echo "  Sedan kan du köra 'docker compose up -d' i samma terminal."
+        echo ""
+        echo "ALTERNATIV 2 (Permanent - kräver omloggning):"
+        echo "  Logga ut och in igen, sedan kör detta skript igen."
+        echo ""
     else
         echo "⚠️  VARNING: docker-gruppen hittades inte. Docker kan vara installerat men inte korrekt konfigurerat."
         echo "Försök starta om systemet och kör skriptet igen."
@@ -84,8 +93,16 @@ if ! groups | grep -q docker; then
     echo "Din användare är inte i docker-gruppen."
     echo "Lägger till dig i docker-gruppen..."
     sudo usermod -aG docker "$USER"
-    echo "Du behöver logga ut och in igen för att ändringen ska träda i kraft."
-    echo "Efter omloggning, kör detta skript igen."
+    echo ""
+    echo "För att använda Docker utan sudo, välj ett av följande alternativ:"
+    echo ""
+    echo "ALTERNATIV 1 (Snabbt - applicera direkt i denna session):"
+    echo "  newgrp docker"
+    echo "  Sedan kan du köra 'docker compose up -d' i samma terminal."
+    echo ""
+    echo "ALTERNATIV 2 (Permanent - kräver omloggning):"
+    echo "  Logga ut och in igen, sedan kör detta skript igen."
+    echo ""
     exit 0
 fi
 
