@@ -72,11 +72,21 @@ chmod +x install_pi_zero_docker.sh
 ./install_pi_zero_docker.sh
 ```
 
-**OBS:** Om Docker inte är installerat kommer skriptet att installera det och be dig logga ut och in igen. Gör det, och kör sedan skriptet igen.
+**OBS:** Om Docker inte är installerat kommer skriptet att installera det och be dig logga ut och in igen. Du kan antingen:
+- Logga ut och in, sedan kör skriptet igen
+- Eller använd `newgrp docker` för att applicera ändringen direkt i nuvarande terminal
 
 ## Steg 5: Starta Rhasspy
 
 ```bash
+docker compose up -d
+```
+
+**Om du får "permission denied"-fel:**
+```bash
+# Applicera docker-gruppändringen direkt (om du nyss kört install_pi_zero_docker.sh):
+newgrp docker
+# Sedan försök igen:
 docker compose up -d
 ```
 
@@ -122,7 +132,14 @@ docker compose up -d
 
 ## Felsökning
 
-### Docker-kommandot kräver sudo
+### Docker-kommandot kräver sudo / "permission denied"
+
+**Snabb lösning (utan omloggning):**
+```bash
+newgrp docker
+```
+
+**Permanent lösning:**
 Du behöver logga ut och in igen efter att Docker installerats.
 
 ### Ingen ljud

@@ -23,6 +23,7 @@ Det här paketet innehåller ett färdigt skelett för ett projekt där:
 cd rhasspy-pi-zero
 nano profile.json    # Ändra MQTT_HOST, MQTT_USER, MQTT_PASS
 ./install_pi_zero_docker.sh
+# Om du får "permission denied", kör: newgrp docker
 docker compose up -d
 ```
 

@@ -37,14 +37,27 @@ Om detta misslyckas på Trixie, se problemet ovan.
 
 ### Problem: "permission denied while trying to connect to the Docker daemon"
 
-**Orsak:** Din användare är inte i docker-gruppen.
+**Orsak:** Din användare är inte i docker-gruppen, eller så har gruppändringen inte trätt i kraft ännu.
 
-**Lösning:**
+**Lösning 1 (Snabbt - utan att logga ut):**
+```bash
+# Om du redan kört install_pi_zero_docker.sh:
+newgrp docker
+
+# Annars, lägg till användaren i gruppen först:
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Detta applicerar gruppändringen direkt i din nuvarande terminal-session. Du kan nu köra `docker compose up -d` utan sudo.
+
+**Lösning 2 (Permanent):**
 ```bash
 sudo usermod -aG docker $USER
 # Logga ut och in igen
-newgrp docker  # Alternativt: applicera gruppändringen utan omloggning
 ```
+
+Efter omloggning kommer din användare permanent ha docker-rättigheter i alla terminaler.
 
 ### Problem: "docker compose: command not found"
 
