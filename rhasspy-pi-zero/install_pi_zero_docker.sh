@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 # Spara nuvarande katalog (där skriptet körs från)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -12,12 +11,54 @@ echo ""
 # Kontrollera om Docker är installerat
 if ! command -v docker &> /dev/null; then
     echo "Docker är inte installerat. Installerar Docker..."
+    
+    # Försök med den officiella Docker-installationen först
     curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-    sudo sh /tmp/get-docker.sh
-    rm /tmp/get-docker.sh
+    if sudo sh /tmp/get-docker.sh 2>&1 | tee /tmp/docker-install.log; then
+        echo "Docker installerat med officiell installationsskript."
+        rm /tmp/get-docker.sh /tmp/docker-install.log
+    else
+        # Kontrollera om felet beror på Trixie/ny Debian-version
+        if grep -q "does not have a Release file" /tmp/docker-install.log || grep -q "trixie" /tmp/docker-install.log; then
+            echo ""
+            echo "⚠️  Den officiella Docker-installationen stöder inte denna version av Raspberry Pi OS ännu."
+            echo "Försöker installera Docker från systemets pakethanterare istället..."
+            echo ""
+            
+            # Installera Docker från Debian/Raspbian repositories
+            sudo apt-get update
+            sudo apt-get install -y ca-certificates curl gnupg
+            
+            # Försök installera docker.io (Debian-paketet)
+            if sudo apt-get install -y docker.io docker-compose; then
+                echo "Docker installerat från systemets pakethanterare."
+            else
+                echo ""
+                echo "❌ Kunde inte installera Docker automatiskt."
+                echo ""
+                echo "Manuell installation krävs. Prova följande:"
+                echo "1. Uppdatera till en äldre version av Raspberry Pi OS (Bookworm eller tidigare)"
+                echo "2. Eller installera Docker manuellt:"
+                echo "   sudo apt-get update"
+                echo "   sudo apt-get install -y docker.io docker-compose"
+                echo ""
+                echo "För mer hjälp, se: https://docs.docker.com/engine/install/debian/"
+                rm /tmp/get-docker.sh /tmp/docker-install.log
+                exit 1
+            fi
+        else
+            # Annat installationsfel
+            echo ""
+            echo "❌ Docker-installationen misslyckades av okänd anledning."
+            echo "Se /tmp/docker-install.log för detaljer."
+            rm /tmp/get-docker.sh
+            exit 1
+        fi
+        rm /tmp/get-docker.sh /tmp/docker-install.log
+    fi
     
     # Lägg till nuvarande användare i docker-gruppen
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker "$USER"
     echo "Docker installerat! Du behöver logga ut och in igen för att köra Docker utan sudo."
     echo "Efter omloggning, kör detta skript igen."
     exit 0
@@ -27,7 +68,7 @@ fi
 if ! groups | grep -q docker; then
     echo "Din användare är inte i docker-gruppen."
     echo "Lägger till dig i docker-gruppen..."
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker "$USER"
     echo "Du behöver logga ut och in igen för att ändringen ska träda i kraft."
     echo "Efter omloggning, kör detta skript igen."
     exit 0

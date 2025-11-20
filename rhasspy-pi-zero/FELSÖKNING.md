@@ -2,6 +2,25 @@
 
 ## Docker-relaterade problem
 
+### Problem: "The repository 'https://download.docker.com/linux/raspbian trixie Release' does not have a Release file"
+
+**Orsak:** Du kör Raspberry Pi OS baserat på Debian Trixie (eller nyare version) och den officiella Docker-installationen stöder inte detta ännu.
+
+**Lösning 1 (Automatisk):** Kör `install_pi_zero_docker.sh` igen - skriptet försöker nu automatiskt installera Docker från systemets pakethanterare om den officiella installationen misslyckas.
+
+**Lösning 2 (Manuell):**
+```bash
+# Installera Docker från Debian/Raspbian repositories
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose
+
+# Lägg till användaren i docker-gruppen
+sudo usermod -aG docker $USER
+# Logga ut och in igen
+```
+
+**Lösning 3 (Downgrade OS):** Om ovanstående inte fungerar, överväg att använda Raspberry Pi OS Bookworm eller en äldre version som har officiellt Docker-stöd.
+
 ### Problem: "docker: command not found"
 
 **Orsak:** Docker är inte installerat.
@@ -13,6 +32,8 @@ sudo sh get-docker.sh
 sudo usermod -aG docker $USER
 # Logga ut och in igen
 ```
+
+Om detta misslyckas på Trixie, se problemet ovan.
 
 ### Problem: "permission denied while trying to connect to the Docker daemon"
 
