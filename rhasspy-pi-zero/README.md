@@ -4,7 +4,9 @@ Denna mapp innehåller:
 
 - `profile.json` – Rhasspy-profil för satelliten
 - `rhasspy.service` – systemd-tjänst för att starta Rhasspy vid boot
-- `install_pi_zero.sh` – enkel installationsscript
+- `install_pi_zero.sh` – installationsscript som klonar Rhasspy från GitHub och installerar det i en virtualenv
+
+**OBS:** Rhasspy installeras från GitHub-källkod eftersom det inte finns som ett PyPI-paket.
 
 ## Steg
 
