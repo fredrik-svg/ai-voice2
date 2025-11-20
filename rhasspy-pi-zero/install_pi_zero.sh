@@ -6,7 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Uppdaterar system..."
 sudo apt update
-sudo apt install -y python3 python3-venv python3-pip git alsa-utils
+sudo apt install -y python3 python3-dev python3-venv python3-pip git alsa-utils \
+    build-essential swig portaudio19-dev libatlas-base-dev
 
 echo "Klonar Rhasspy från GitHub..."
 cd ~
@@ -14,7 +15,7 @@ if [ -d "rhasspy" ]; then
   echo "Rhasspy-katalog finns redan, tar bort..."
   rm -rf rhasspy
 fi
-git clone https://github.com/rhasspy/rhasspy.git
+git clone --recursive https://github.com/rhasspy/rhasspy.git
 cd rhasspy
 
 echo "Skapar virtualenv..."
@@ -27,7 +28,11 @@ pip install --upgrade pip
 echo "Konfigurerar Rhasspy..."
 ./configure --enable-in-place --disable-dependency-check
 
-pip install .
+echo "Bygger Rhasspy..."
+make
+
+echo "Installerar Rhasspy..."
+make install
 
 echo "Skapar profilkatalog..."
 mkdir -p ~/.config/rhasspy/profiles/sv
