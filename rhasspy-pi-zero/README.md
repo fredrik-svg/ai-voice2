@@ -8,6 +8,17 @@ Denna mapp innehåller:
 
 **OBS:** Rhasspy installeras från GitHub-källkod eftersom det inte finns som ett PyPI-paket.
 
+## Python 3.13+ Kompatibilitet
+
+Installationsskriptet hanterar automatiskt problemet med `distutils` som togs bort i Python 3.13:
+
+1. **Proaktiv kontroll**: Skriptet testar om pip fungerar innan det används
+2. **Automatisk reparation**: Om pip är trasigt (försöker importera saknad `distutils`), installeras det om från scratch med `get-pip.py`
+3. **Dubbel verifiering**: Efter Rhasspy's `configure` skapar `.venv`, verifieras och repareras pip igen innan `make` körs
+4. **Robusthet**: Skriptet avslutar med fel om pip inte kan repareras, istället för att misslyckas halvvägs
+
+Detta säkerställer att både `~/rhasspy-venv` och Rhasspy's interna `.venv` har fungerande pip, även på Python 3.13+.
+
 ## Steg
 
 1. Kopiera hela mappen `rhasspy-pi-zero` till din Pi Zero WH (t.ex. via `scp`).
@@ -18,10 +29,6 @@ Denna mapp innehåller:
    nano profile.json    # Ändra MQTT_HOST, MQTT_USER, MQTT_PASS
    ./install_pi_zero.sh
    ```
-
-   > Tips: Scriptet försöker installera `python3-distutils` där paketet finns kvar (äldre Debian/
-   > Ubuntu-versioner). På nyare system där distutils redan är borttaget hanteras pip istället via
-   > ensurepip/get-pip fallback i scriptet.
 
 3. Kontrollera att tjänsten kör:
 

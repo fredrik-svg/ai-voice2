@@ -29,39 +29,55 @@ git clone --recursive https://github.com/rhasspy/rhasspy.git
 cd rhasspy
 
 echo "Skapar virtualenv..."
-python3 -m venv --upgrade-deps ~/rhasspy-venv
+python3 -m venv ~/rhasspy-venv
 source ~/rhasspy-venv/bin/activate
 
-echo "Installerar Rhasspy (kan ta lite tid)..."
-# Försök uppgradera pip, setuptools och wheel
-# Om pip är trasigt (t.ex. på Python 3.13 där distutils saknas), använd get-pip.py
-pip install --upgrade pip setuptools wheel 2>/dev/null || {
-    echo "Pip är trasigt (troligen på grund av saknad distutils), använder get-pip.py..."
+echo "Fixar pip för Python 3.13+ kompatibilitet..."
+# Testa om pip fungerar
+if ! pip --version &>/dev/null; then
+    echo "Pip är trasigt (troligen på grund av saknad distutils på Python 3.13+)"
+    echo "Installerar pip med get-pip.py..."
     curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-    python /tmp/get-pip.py
+    python /tmp/get-pip.py --force-reinstall
     rm /tmp/get-pip.py
-    # Efter get-pip.py, installera setuptools och wheel
-    pip install --upgrade setuptools wheel
-}
+else
+    echo "Pip fungerar, uppgraderar..."
+    pip install --upgrade pip setuptools wheel
+fi
+
+echo "Installerar Rhasspy (kan ta lite tid)..."
 
 echo "Konfigurerar Rhasspy..."
 ./configure --enable-in-place --disable-dependency-check
 
-echo "Uppgraderar pip i Rhasspy virtualenv..."
+echo "Fixar pip i Rhasspy virtualenv för Python 3.13+ kompatibilitet..."
 if [ -d ".venv" ]; then
-    # Använd ensurepip för att installera en ny pip om den gamla är trasig
-    .venv/bin/python -m ensurepip --upgrade 2>/dev/null || true
-    
-    # Försök uppgradera pip, setuptools och wheel
-    # Om pip är trasigt (t.ex. på Python 3.13 där distutils saknas), använd get-pip.py
-    .venv/bin/python -m pip install --upgrade pip setuptools wheel 2>/dev/null || {
-        echo "Pip är trasigt (troligen på grund av saknad distutils), använder get-pip.py..."
+    # Testa om pip fungerar genom att försöka köra det
+    if ! .venv/bin/python -m pip --version &>/dev/null; then
+        echo "Pip är trasigt (troligen på grund av saknad distutils på Python 3.13+)"
+        echo "Installerar om pip med get-pip.py..."
+        
+        # Ta bort trasig pip/setuptools från venv för att få en ren start
+        rm -rf .venv/lib/python*/site-packages/pip* .venv/lib/python*/site-packages/setuptools* .venv/lib/python*/site-packages/_distutils_hack* 2>/dev/null || true
+        
+        # Installera pip från scratch med get-pip.py
         curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-        .venv/bin/python /tmp/get-pip.py
+        .venv/bin/python /tmp/get-pip.py --force-reinstall
         rm /tmp/get-pip.py
-        # Efter get-pip.py, installera setuptools och wheel
-        .venv/bin/python -m pip install --upgrade setuptools wheel
-    }
+        
+        echo "Pip ominstallerat framgångsrikt!"
+    else
+        echo "Pip fungerar redan, uppgraderar bara..."
+        .venv/bin/python -m pip install --upgrade pip setuptools wheel
+    fi
+    
+    # Verifiera att pip nu fungerar
+    if .venv/bin/python -m pip --version; then
+        echo "Pip verifierat fungerande: $(.venv/bin/python -m pip --version)"
+    else
+        echo "VARNING: Pip verkar fortfarande inte fungera korrekt!"
+        exit 1
+    fi
 fi
 
 echo "Bygger Rhasspy..."
