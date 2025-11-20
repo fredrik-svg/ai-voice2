@@ -42,6 +42,14 @@ Docker-baserad installation är den rekommenderade metoden eftersom den:
    docker compose up -d
    ```
 
+   **Om du får "permission denied"-fel:**
+   ```bash
+   # Applicera docker-gruppändringen direkt:
+   newgrp docker
+   # Sedan försök igen:
+   docker compose up -d
+   ```
+
 4. Kontrollera att tjänsten kör:
 
    ```bash
