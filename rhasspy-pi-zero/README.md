@@ -2,6 +2,12 @@
 
 Denna mapp innehåller två installationsmetoder för Rhasspy på Pi Zero WH:
 
+## 📚 Dokumentation
+
+- **[SNABBSTART.md](SNABBSTART.md)** - Steg-för-steg guide för att komma igång snabbt
+- **[FELSÖKNING.md](FELSÖKNING.md)** - Lösningar på vanliga problem
+- **README.md** (denna fil) - Fullständig dokumentation
+
 ## Filer
 
 - `profile.json` – Rhasspy-profil för satelliten
