@@ -6,6 +6,12 @@ Det här paketet innehåller ett färdigt skelett för ett projekt där:
 - En **Rhasspy-bas** (t.ex. Raspberry Pi 4 eller server) kör STT/TTS och skickar intents till n8n
 - **n8n** tar emot intents via Webhook och kan svara via Rhasspys TTS-API
 
+## 📚 Dokumentation
+
+- **[LÖSNING.md](LÖSNING.md)** - Förklaring av Python 3.13+ kompatibilitetslösningen
+- **[rhasspy-pi-zero/SNABBSTART.md](rhasspy-pi-zero/SNABBSTART.md)** - Snabbstartsguide för Pi Zero
+- **[rhasspy-pi-zero/FELSÖKNING.md](rhasspy-pi-zero/FELSÖKNING.md)** - Felsökningsguide
+
 ## Mappstruktur
 
 - `rhasspy-pi-zero/` – filer för din Pi Zero WH (satellit)
