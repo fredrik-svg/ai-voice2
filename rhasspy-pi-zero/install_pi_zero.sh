@@ -23,6 +23,10 @@ source ~/rhasspy-venv/bin/activate
 
 echo "Installerar Rhasspy (kan ta lite tid)..."
 pip install --upgrade pip
+
+echo "Konfigurerar Rhasspy..."
+./configure --enable-in-place --disable-dependency-check
+
 pip install .
 
 echo "Skapar profilkatalog..."
